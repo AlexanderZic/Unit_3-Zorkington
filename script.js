@@ -37,6 +37,7 @@ export const gameDetails = {
 
 let currentRoom = "Barista";
 let playerInventory = [];
+
 let cafeRooms = {
   BeanHouse: {
     exits: ["Barista", "MilkStation"],
@@ -54,6 +55,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "Liberica Beans",
@@ -66,6 +68,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "Mundo Novo Beans",
@@ -78,6 +81,16 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
+      },
+      {
+        name: "Coffe Bean Tree",
+        description: "Here you see a fake tree showing what it looks like it is ready to be harvested.",
+        location: "BeanHouse",
+        inspect: function () {
+          return `You closely examine the ${this.name}. ${this.description}`;
+        },
+        movable: false
       },
     ],
   },
@@ -96,6 +109,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "Whole Milk",
@@ -108,6 +122,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "Coconut Milk",
@@ -120,6 +135,16 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
+      },
+      {
+        name: "Milk Fountain",
+        description: "It is large fountain of a milk carton at the ceiling pouring milk into a large coffee cup. A sign is nearby thast says: DO NOT TOUCH",
+        location: "SugarCorner",
+        inspect: function () {
+          return `You closely examine the ${this.name}. ${this.description}`;
+        },
+        movable: false
       },
     ],
   },
@@ -137,6 +162,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "White Sugar",
@@ -149,6 +175,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "Brown Sugar",
@@ -161,6 +188,16 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
+      },
+      {
+        name: "Giant Statue",
+        description: "It is large statue of a white sugar cube statue tilted on its side.",
+        location: "SugarCorner",
+        inspect: function () {
+          return `You closely examine the ${this.name}. ${this.description}`;
+        },
+        movable: false
       },
     ],
   },
@@ -178,6 +215,7 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
       },
       {
         name: "Business Cards",
@@ -189,7 +227,8 @@ let cafeRooms = {
         },
         pickUp: function () {
           return `You pick up the ${this.name}.`;
-        },
+        }, 
+        movable: true
       },
       {
         name: "Napkins",
@@ -201,10 +240,22 @@ let cafeRooms = {
         pickUp: function () {
           return `You pick up the ${this.name}.`;
         },
+        movable: true
+      },
+      {
+        name: "Coffee Machine",
+        description: "A large expensive looking coffee machine.",
+        location: "Barista",
+        inspect: function () {
+          return `You closely examine the ${this.name}. ${this.description}`;
+        },
+        movable: false
       },
     ],
   },
 };
+
+
 export const domDisplay = (playerInput) => {
   /* 
         TODO: for students
@@ -263,29 +314,27 @@ export const domDisplay = (playerInput) => {
     return displayInventory();
   }
 
-  function pickupItem(itemName) {
-    let roomItemIndex = cafeRooms[currentRoom].items.findIndex(
-      (item) => item.name.toLowerCase() === itemName
-    );
-    let playerItemIndex = playerInventory.findIndex(
-      (item) => item.name.toLowerCase() === itemName
-    );
-
-    if (roomItemIndex !== -1) {
-      let item = cafeRooms[currentRoom].items.splice(roomItemIndex, 1)[0];
-      playerInventory.push(item);
-      console.log(`You pick up the ${item.name}.`);
-      return `You pick up the ${item.name}.`;
-    } else if (playerItemIndex !== -1) {
-      let item = playerInventory.splice(playerItemIndex, 1)[0];
-      cafeRooms[currentRoom].items.push(item);
-      console.log(`You drop the ${item.name} in the ${currentRoom}.`);
-      return `You drop the ${item.name} in the ${currentRoom}.`;
-    } else {
-      console.log(`There is no ${itemName} here.`);
-      return `There is no ${itemName} here.`;
+    function pickupItem(itemName) {
+        let roomItemIndex = cafeRooms[currentRoom].items.findIndex(item => item.name.toLowerCase() === itemName);
+    
+        if (roomItemIndex !== -1) {
+            let item = cafeRooms[currentRoom].items[roomItemIndex];
+    
+            if (item.movable) {
+                cafeRooms[currentRoom].items.splice(roomItemIndex, 1);
+                playerInventory.push(item);
+                console.log(`You pick up the ${item.name}.`);
+                return `You pick up the ${item.name}.`;
+            } else {
+                console.log(`You can't pick up the ${item.name}.`);
+                return `You can't pick up the ${item.name}.`;
+            }
+        } else {
+            console.log(`There is no ${itemName} here.`);
+            return `There is no ${itemName} here.`;
+        }
     }
-  }
+    
 
   if (playerInput.startsWith("pickup")) {
     let itemName = playerInput.slice(7).trim().toLowerCase();
@@ -325,6 +374,7 @@ export const domDisplay = (playerInput) => {
     const roomInfo = `You are in the ${currentRoom} room, you can see: ${itemsList}. ${cafeRooms[currentRoom].description} Please visit all the rooms and pick out what you would like in your coffee! 
         From here you can see the ${exitsList}.`;
     return roomInfo;
+
   } else if (playerInput.startsWith("inspect")) {
     let itemName = playerInput.slice(8).trim().toLowerCase();
     let item = cafeRooms[currentRoom].items.find(
@@ -341,7 +391,7 @@ export const domDisplay = (playerInput) => {
     let roomName = playerInput.slice(6).trim();
     if (cafeRooms[currentRoom].exits.includes(roomName)) {
       enterRoom(roomName);
-      return `You are now in the ${currentRoom}.`;
+      return `You are now in the ${currentRoom} room.`;
     } else {
       console.log(`You can't go to ${roomName} from here.`);
       return `You can't go to ${roomName} from here.`;
