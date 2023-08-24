@@ -1,0 +1,27 @@
+Cafe Zorkington Pseudocode
+This project is based off of a Classic text based game of Zorkington. In this version the player can collect coffee ingrediants to make a custom coffee.
+
+# Game Details and Initialization
+
+# Define Cafe Rooms
+
+# Function to make coffee
+
+# Define Functions
+
+# Function to enter a new room
+
+# Function to display player's inventory
+
+# Function to pick up an item
+
+# Function to drop an item
+
+# Main Display Function
+
+# End of Functions
+
+# Initialize game display with starting room description
+
+# Listen for player input
+

@@ -1,18 +1,3 @@
-/* 
-    TODO for students
-        General Setup:
-            - This object is framed for you to fill out the values to help customize your game.
-            - This will alter the browser to display your game title. The "Quick Notes" modal will also detail your information along with the description (desc) of what your game is about. It is important to highlight key commands that you want the player to use.
-            - The startingRoomDescription will display what the player sees upon coming to your project.
-
-        Do NOT alter the name of this object.
-
-        Both exports are required in order for this project to run.
-
-        - index.html should be running in your browser through the build process.
-            - use your browsers console throughout testing.
-*/
-
 export const gameDetails = {
   title: "Cafe Zorkington!",
   desc: "Welcome to the world of... here are some quick rules & concepts...",
@@ -21,19 +6,17 @@ export const gameDetails = {
   startingRoomDescription:
     "You are in a Coffee Shop where you choose your ingredients from each room. You are in the Barista room where it can all be put together once you are ready! You are handed a bag and told to take a look around...",
   playerCommands: [
-    // replace these with your games commands as needed
     "look around",
     "inspect",
     "pickup",
     "go to",
     "check bag",
     "drop",
+    "make coffee"
   ],
-  // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference.
-  // This shouldn't be more than 6-8 different commands.
+  
 };
-//.iclude is my friend
-// Your code here
+
 
 let currentRoom = "Barista";
 let playerInventory = [];
@@ -257,37 +240,44 @@ let cafeRooms = {
 
 
 export const domDisplay = (playerInput) => {
-  /* 
-        TODO: for students
-        - This function must return a string. 
-        - This will be the information that is displayed within the browsers game interface above the users input field.
 
-        - This function name cannot be altered. 
-        - "playerInput" is whatever text the user is typing within the input field in the browser after hitting the ENTER key.
-            - test this out with a console log.
+    function hasRequiredItems() {
+        const ingredientItems = getIngredientItems();
+        const beans = ingredientItems.filter(item => item.location === "BeanHouse");
+        const milk = ingredientItems.filter(item => item.location === "MilkStation");
+        const sugar = ingredientItems.filter(item => item.location === "SugarCorner");
+      
+        return beans.length === 1 && milk.length === 1 && sugar.length === 1;
+      }
+      function getIngredientItems() {
+        const ingredientItems = playerInventory.filter(item => {
+          const location = item.location;
+          return (
+            (location === "BeanHouse" || location === "MilkStation" || location === "SugarCorner") &&
+            item.movable
+          );
+        });
+        return ingredientItems;
+      }
+    
+  if (playerInput.startsWith("make coffee")) {
+    if (hasRequiredItems()) {
+      const ingredientItems = getIngredientItems();
 
-        What your player should be able to do (checklist):
-            - move between rooms
-            - view current room
-            - pickup moveable items
-                - there should be at least 2 items that cannot be moved.
-            - view player inventory
-        
-        Stretch Goals:
-            - drop items in "current room" (if a player picks up an item in one room and moves to another, they should be able to remove it from their inventory)
-            - create win/lose conditions.
-                - this could be a puzzle that may require an item to be within the players inventory to move forward, etc.
+      const beans = ingredientItems.filter((item) => item.location === "BeanHouse");
+      const milk = ingredientItems.filter((item) => item.location === "MilkStation");
+      const sugar = ingredientItems.filter((item) => item.location === "SugarCorner");
 
-        HINTS:
-            - consider the various methods that are available to use.
-            - arrays are a great way to hold "lists".
-            - You are not limited to just the exported function. Build additional functions and don't forget to hold the return within a variable.
-            - Review notes!
-                - Have them open as you build.
-                - break down each problem into small chunks
-                    - What is the process of picking up an item exactly? ex: Look. Pick from a list of items. Put into players list of items... 
-    */
-  // Your code here
+      if (beans.length === 1 && milk.length === 1 && sugar.length === 1) {
+        const coffeeString = `Here is your coffee with ${beans[0].name}, ${milk[0].name}, and ${sugar[0].name}. Enjoy your coffee!`;
+        return coffeeString;
+      } else {
+        return "You need exactly one type of bean, milk, and sugar to make coffee.";
+      }
+    } else {
+      return "You don't have all the required ingredients to make coffee.";
+    }
+  }
 
   function enterRoom(newRoom) {
     let validTransitions = cafeRooms[currentRoom].exits;
@@ -372,7 +362,7 @@ export const domDisplay = (playerInput) => {
       .join(", ");
     const exitsList = cafeRooms[currentRoom].exits.join(", ");
     const roomInfo = `You are in the ${currentRoom} room, you can see: ${itemsList}. ${cafeRooms[currentRoom].description} Please visit all the rooms and pick out what you would like in your coffee! 
-        From here you can see the ${exitsList}.`;
+        From here you can see the ${exitsList} rooms.`;
     return roomInfo;
 
   } else if (playerInput.startsWith("inspect")) {
@@ -399,5 +389,5 @@ export const domDisplay = (playerInput) => {
   } else {
     console.log(`I don't know how to "${playerInput}".`);
     return `I don't know how to "${playerInput}".`;
-  }
+  } 
 };
