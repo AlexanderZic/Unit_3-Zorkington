@@ -18,7 +18,7 @@ export const gameDetails = {
     desc: 'Welcome to the world of... here are some quick rules & concepts...',
     author: 'Alexander Zic',
     cohort: 'SBPT-2023',
-    startingRoomDescription: 'Take a look around...',
+    startingRoomDescription: 'You are in a Coffee Shop where you choose your ingredients from each room. You are in the Barista room where it can all be put together! Take a look around...',
     playerCommands: [
         // replace these with your games commands as needed
         'inspect', 'look around', 'pickup', 'go to'
@@ -68,29 +68,29 @@ export const domDisplay = (playerInput) => {
  
 
 let cafeRooms = {
-       CoffeeBeanHouse:{
+       BeanHouse:{
         exits: ['Barista', 'MilkStation'],
         description: "You are in the coffee bean selection area. Please select one.",
         items: [
-            {name: "Mocha", 
-            description: "Complex, very earthy and deep, and of course chocolatey.", 
-            location: "CoffeeBeanHouse",
+            {name: "Mocha Beans", 
+            description: "This roast is complex, very earthy and deep, and of course chocolatey.", 
+            location: "BeanHouse",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
             pickUp: function() {
                 return `You pick up the ${this.name}.`;}
             },
-            {name: "Liberica", 
-            description: "Smoky, nutty, floral with hints of dark chocolate, ripe berry and spice.", 
-            location: "CoffeeBeanHouse",
+            {name: "Liberica Beans", 
+            description: "This roast is smoky, nutty, floral with hints of dark chocolate, ripe berry and spice.", 
+            location: "BeanHouse",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
             pickUp: function() {
                 return `You pick up the ${this.name}.`;}
             },
-            {name: "Mundo Novo", 
-            description: "Dark roast, medium-bodied coffee with crisp, woody, and nutty undertones.", 
-            location: "CoffeeBeanHouse",
+            {name: "Mundo Novo Beans", 
+            description: "This is a dark roast, medium-bodied coffee with crisp, woody, and nutty undertones.", 
+            location: "BeanHouse",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
             pickUp: function() {
@@ -99,11 +99,11 @@ let cafeRooms = {
         ]
     },
        MilkStation: {
-        exits:['Barista','CoffeeBeanHouse', 'SugarCorner'],
+        exits:['Barista','BeanHouse', 'SugarCorner'],
         description: "Welcome to the milk selection area. Please select one.",
         items: [
             {name: "Oat Milk", 
-            description: "Plant milk derived from whole oat with a creamy texture and mild oatmeal-like flavor.", 
+            description: "This is plant milk derived from whole oat with a creamy texture and mild oatmeal-like flavor.", 
             location: "MilkStation",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
@@ -111,7 +111,7 @@ let cafeRooms = {
                 return `You pick up the ${this.name}.`;}
             },
             {name: "Whole Milk", 
-            description: "Produced and pasturized from a cow, and has a rich and creamy flavor with a hint of sweetness.", 
+            description: "This is produced and pasturized from a cow, and has a rich and creamy flavor with a hint of sweetness.", 
             location: "MilkStation",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
@@ -119,7 +119,7 @@ let cafeRooms = {
                 return `You pick up the ${this.name}.`;}
             },
             {name: "Coconut Milk", 
-            description: "Delivers the aroma and nuttiness of tropical fruit, with a sweet and a prominent taste of coconut.", 
+            description: "This milk delivers the aroma and nuttiness of tropical fruit, with a sweet and a prominent taste of coconut.", 
             location: "MilkStation",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
@@ -133,7 +133,7 @@ let cafeRooms = {
         description: "You've entered the sugar selection area. Please select one.",
         items: [
             {name: "Raw Sugar", 
-            description: "Has a delicate molasses taste and aroma.", 
+            description: "This sugar has a delicate molasses taste and aroma.", 
             location: "SugarCorner",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
@@ -141,7 +141,7 @@ let cafeRooms = {
                 return `You pick up the ${this.name}.`;}
             },
             {name: "White Sugar", 
-            description: "Has a pure sweetness, offering a clean and straightforward taste.", 
+            description: "This sugar has a pure sweetness, offering a clean and straightforward taste.", 
             location: "SugarCorner",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
@@ -149,7 +149,7 @@ let cafeRooms = {
                 return `You pick up the ${this.name}.`;}
             },
             {name: "Brown Sugar", 
-            description: "Has a deep, caramel or toffee-like flavor due to the added molasses.", 
+            description: "This sugar has a deep, caramel or toffee-like flavor due to the added molasses.", 
             location: "SugarCorner",
             inspect: function() {
                 return `You closely examine the ${this.name}. ${this.description}`;},
@@ -159,8 +159,8 @@ let cafeRooms = {
         ]
        },
        Barista: {
-        exits:['CoffeeBeanHouse', 'MilkStation', 'SugarCorner'],
-        description: "You're in the Barista Room. We can put your coffee together for you here.",
+        exits:['BeanHouse', 'MilkStation', 'SugarCorner'],
+        description: "We can put your coffee together for you here.",
         items: [{name: "Stickers", 
                  description: "A fun cartoon logo of CafeZorkington that you can take!", 
                 location: "Barista",
@@ -228,7 +228,9 @@ function pickUpItem(itemName) {
         console.log(currentRoom);
 
         const itemsList = cafeRooms[currentRoom].items.map(item => item.name).join(', ');
-        const roomInfo = `You are in the ${currentRoom} room, you can see: ${itemsList}, ${cafeRooms[currentRoom].description} Please visit all the rooms and pick out what you would like!`;
+        const exitsList = cafeRooms[currentRoom].exits.join(', ');
+        const roomInfo = `You are in the ${currentRoom} room, you can see: ${itemsList}. ${cafeRooms[currentRoom].description} Please visit all the rooms and pick out what you would like in your coffee! 
+        From here you can see the ${exitsList}.`;
         return roomInfo;
 
     } else if (playerInput.startsWith('pickup')) {
@@ -256,6 +258,7 @@ function pickUpItem(itemName) {
             return item.inspect();
         } else {
             console.log(`There is no ${itemName} here.`);
+            return `There is no ${itemName} here.`
         }
 
 
@@ -263,11 +266,14 @@ function pickUpItem(itemName) {
         let roomName = playerInput.slice(6).trim(); 
         if (cafeRooms[currentRoom].exits.includes(roomName)) {
             enterRoom(roomName);
+            return `You are now in the ${currentRoom}.`;
         } else {
             console.log(`You can't go to ${roomName} from here.`);
+            return `You can't go to ${roomName} from here.`
         }
     } else {
         console.log(`I don't know how to "${playerInput}".`);
+        return `I don't know how to "${playerInput}".`
     };
 
 }
