@@ -18,10 +18,10 @@ export const gameDetails = {
     desc: 'Welcome to the world of... here are some quick rules & concepts...',
     author: 'Alexander Zic',
     cohort: 'SBPT-2023',
-    startingRoomDescription: 'You are in a Coffee Shop where you choose your ingredients from each room. You are in the Barista room where it can all be put together! Take a look around...',
+    startingRoomDescription: 'You are in a Coffee Shop where you choose your ingredients from each room. You are in the Barista room where it can all be put together once you are ready! You are handed a bag and told to take a look around...',
     playerCommands: [
         // replace these with your games commands as needed
-        'inspect', 'look around', 'pickup', 'go to'
+        'look around','inspect','pickup','go to','check bag'
     ]
     // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference. 
     // This shouldn't be more than 6-8 different commands.
@@ -30,8 +30,9 @@ export const gameDetails = {
 // Your code here
 
 let currentRoom = 'Barista';
+ let playerInventory = [];
 export const domDisplay = (playerInput) => {
-    
+   
     /* 
         TODO: for students
         - This function must return a string. 
@@ -203,23 +204,35 @@ function enterRoom(newRoom) {
     }
 }
 
-  
- 
-
-function pickUpItem(itemName) {
-    let item = cafeRooms[currentRoom].items.find(item => item.name.toLowerCase() === itemName);
-    if (item) {
-        if (item.pickUp) {
-            console.log(item.pickUp());
-        } else {
-            console.log(`You can't pick up the ${itemName}.`);
-            return `You can't pick up the ${itemName}.`;
-        }
+function displayInventory() {
+    if (playerInventory.length === 0) {
+        return "Your bag is empty.";
     } else {
-        console.log(`There is no ${itemName} here.`);
-        return `There is no ${itemName} here.`;
+        const inventoryList = playerInventory.map(item => item.name).join(', ');
+        console.log("Inside displayInventory:", inventoryList);
+        return `Your bag: ${inventoryList}`;
     }
 }
+
+if (playerInput.startsWith('check bag')) {
+    return displayInventory();}
+
+    function pickUpItem(itemName) {
+        let item = cafeRooms[currentRoom].items.find(item => item.name.toLowerCase() === itemName);
+        if (item) {
+            if (item.pickUp) {
+                console.log(item.pickUp()); // Debug: Log the pickUp message
+                playerInventory.push(item);
+                console.log('Item added to bag:', item); // Debug: Log the item added to inventory
+            } else {
+                console.log(`You can't pick up the ${itemName}.`);
+                return `You can't pick up the ${itemName}.`;
+            }
+        } else {
+            console.log(`There is no ${itemName} here.`);
+            return `There is no ${itemName} here.`;
+        }
+    }
 
     if (playerInput.startsWith('look around')) {
         console.log(cafeRooms[currentRoom].description);
@@ -239,6 +252,7 @@ function pickUpItem(itemName) {
         if (item) {
             if (item.pickUp) {
                 console.log(item.pickUp());
+                playerInventory.push(item);
                 return item.pickUp();
             } else {
                console.log(`You can't pick up the ${itemName}.`);
