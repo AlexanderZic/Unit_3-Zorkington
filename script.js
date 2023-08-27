@@ -1,3 +1,4 @@
+//Game Details and Initialization
 export const gameDetails = {
   title: "Cafe Zorkington",
   desc: "Welcome to the world of... here are some quick rules & concepts...",
@@ -8,7 +9,7 @@ export const gameDetails = {
   playerCommands: [
     "look around",
     "inspect",
-    "pickup",
+    "pick up",
     "go to",
     "check bag",
     "drop",
@@ -16,9 +17,11 @@ export const gameDetails = {
   ],
 };
 
+//Defining a starting room and initial playerInventory
 let currentRoom = "Barista";
 let playerInventory = [];
 
+//Define Cafe Rooms
 let cafeRooms = {
   BeanHouse: {
     exits: ["Barista", "MilkStation"],
@@ -240,6 +243,10 @@ let cafeRooms = {
 };
 
 export const domDisplay = (playerInput) => {
+
+//Define Functions
+
+    //This function checks whether the player's inventory contains exactly one type of bean, one type of milk, and one type of sugar, which are the required ingredients for making a complete coffee.
   function hasRequiredItems() {
     const ingredientItems = getIngredientItems();
     const beans = ingredientItems.filter(
@@ -254,6 +261,8 @@ export const domDisplay = (playerInput) => {
 
     return beans.length === 1 && milk.length === 1 && sugar.length === 1;
   }
+
+  //function that filters the items in the player's inventory to retrieve only those items that are considered ingredients for making coffee leaving out items from Barista Room
   function getIngredientItems() {
     const ingredientItems = playerInventory.filter((item) => {
       const location = item.location;
@@ -267,6 +276,7 @@ export const domDisplay = (playerInput) => {
     return ingredientItems;
   }
 
+  // player command to make coffee
   if (playerInput.startsWith("make coffee")) {
     if (hasRequiredItems()) {
       const ingredientItems = getIngredientItems();
@@ -292,6 +302,7 @@ export const domDisplay = (playerInput) => {
     }
   }
 
+    //function to enter new room and changes the current room
   function enterRoom(newRoom) {
     let validTransitions = cafeRooms[currentRoom].exits;
     if (validTransitions.includes(newRoom)) {
@@ -302,7 +313,7 @@ export const domDisplay = (playerInput) => {
       throw `You can't move between these rooms: ${currentRoom} to ${newRoom}`;
     }
   }
-
+  //function that displays player inventory
   function displayInventory() {
     if (playerInventory.length === 0) {
       return "Your bag is empty.";
@@ -312,11 +323,12 @@ export const domDisplay = (playerInput) => {
       return `Your bag: ${inventoryList}`;
     }
   }
-
+//command for checking inventory
   if (playerInput.startsWith("check bag")) {
     return displayInventory();
   }
 
+  //function that controls picking up item 
   function pickupItem(itemName) {
     let roomItemIndex = cafeRooms[currentRoom].items.findIndex(
       (item) => item.name.toLowerCase() === itemName
@@ -339,17 +351,17 @@ export const domDisplay = (playerInput) => {
       return `There is no ${itemName} here.`;
     }
   }
-
-  if (playerInput.startsWith("pickup")) {
+//command for picking up item
+  if (playerInput.startsWith("pick up")) {
     let itemName = playerInput.slice(7).trim().toLowerCase();
     return pickupItem(itemName);
   }
-
+//command for dropping item
   if (playerInput.startsWith("drop")) {
     let itemName = playerInput.slice(5).trim().toLowerCase();
     return dropItem(itemName);
   }
-
+//function for dropping item that could be in any room puts the item into an array in that room
   function dropItem(itemName) {
     let itemIndex = playerInventory.findIndex(
       (item) => item.name.toLowerCase() === itemName
@@ -364,7 +376,7 @@ export const domDisplay = (playerInput) => {
       return `There is no ${itemName} in your inventory.`;
     }
   }
-
+//command for look around gives discription of what you see and where the player
   if (playerInput.startsWith("look around")) {
     console.log(cafeRooms[currentRoom].description);
     console.log(cafeRooms[currentRoom].exits);
@@ -378,6 +390,7 @@ export const domDisplay = (playerInput) => {
     const roomInfo = `You are in the ${currentRoom} room, you can see: ${itemsList}. ${cafeRooms[currentRoom].description} Please visit all the rooms and pick out what you would like in your coffee! 
         From here you can see the ${exitsList} rooms.`;
     return roomInfo;
+// command to inspect
   } else if (playerInput.startsWith("inspect")) {
     let itemName = playerInput.slice(8).trim().toLowerCase();
     let item = cafeRooms[currentRoom].items.find(
@@ -390,6 +403,7 @@ export const domDisplay = (playerInput) => {
       console.log(`There is no ${itemName} here.`);
       return `There is no ${itemName} here.`;
     }
+// command to go to
   } else if (playerInput.startsWith("go to")) {
     let roomName = playerInput.slice(6).trim();
     if (cafeRooms[currentRoom].exits.includes(roomName)) {
